@@ -22,3 +22,18 @@ variable "project" {
   type = string
   default = "Inpage"
 }
+
+variable "internal" {
+  type = bool
+  default = true
+}
+
+variable "text-processing-tg-port" {
+ type = number
+ default = 3000 
+}
+
+variable "dictionary-tg-port" {
+  type = number
+  default = 3000
+}
