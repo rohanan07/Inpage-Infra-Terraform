@@ -10,7 +10,7 @@ resource "aws_ecs_service" "text-processing-service" {
   network_configuration {
     subnets = var.private_subnets
     security_groups = [ var.security_group_id ]
-    assign_public_ip = "DISABLED"
+    assign_public_ip = false
   }
 
   load_balancer {
@@ -37,7 +37,7 @@ resource "aws_ecs_service" "dictionary-service" {
   network_configuration {
     subnets = var.private_subnets
     security_groups = [ var.security_group_id ]
-    assign_public_ip = "DISABLED"
+    assign_public_ip = false
   }
 
   load_balancer {

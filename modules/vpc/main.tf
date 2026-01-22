@@ -8,9 +8,9 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "public_subnets" {
-  count = length(var.availability_zones)
+  count = length(var.public_subnets_cidr)
   vpc_id = aws_vpc.main.id
-  cidr_block = element(var.private_subnets_cidr, count.index)
+  cidr_block = element(var.public_subnets_cidr, count.index)
   availability_zone = element(var.availability_zones, count.index)
   map_public_ip_on_launch = true
   tags = {
@@ -19,7 +19,7 @@ resource "aws_subnet" "public_subnets" {
 }
 
 resource "aws_subnet" "private_subnets" {
-  count = length(var.availability_zones)
+  count = length(var.private_subnets_cidr)
   vpc_id = aws_vpc.main.id
   cidr_block = element(var.private_subnets_cidr, count.index)
   availability_zone = element(var.availability_zones, count.index)
@@ -62,18 +62,22 @@ resource "aws_route_table_association" "public_subnet_assc" {
 }
 
 resource "aws_route_table" "private_rt" {
+  count  = length(var.availability_zones)
   vpc_id = aws_vpc.main.id
+  tags = {
+    Name = "${var.project}-private-rt-${count.index + 1}"
+  }
 }
 
 resource "aws_route" "private_nat" {
   count = length(var.availability_zones)
   destination_cidr_block = "0.0.0.0/0"
-  route_table_id = aws_route_table.private_rt.id
+  route_table_id = aws_route_table.private_rt[count.index].id
   nat_gateway_id = aws_nat_gateway.nat[count.index].id
 }
 
 resource "aws_route_table_association" "private_subnet_assc" {
   count = length(var.availability_zones)
   subnet_id = aws_subnet.private_subnets[count.index].id
-  route_table_id = aws_route_table.private_rt.id
+  route_table_id = aws_route_table.private_rt[count.index].id
 }

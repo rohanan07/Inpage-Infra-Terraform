@@ -21,7 +21,7 @@ resource "aws_lb_target_group" "text-processing-tg" {
 
   health_check {
     enabled = true
-    path = "/health"
+    path = "/"
     port                = "traffic-port"
     protocol            = "HTTP"
     healthy_threshold   = 2
@@ -46,7 +46,7 @@ resource "aws_lb_target_group" "dictionary-tg" {
 
   health_check {
     enabled = true
-    path = "/health"
+    path = "/"
     port                = "traffic-port"
     protocol            = "HTTP"
     healthy_threshold   = 2

@@ -32,9 +32,33 @@ module "ecs" {
   source = "./modules/ecs"
   project = var.project
   cloud_watch_log_group_name = module.cloudwatch.cloud_watch_log_group_name
+  task_role_arn = module.iam.task_role_arn
+  execution_role_arn = module.iam.task_execution_role_arn
+  text-processing-target-group-arn = module.alb.text_processing_target_group_arn
+  dictionary-target-group-arn = module.alb.dictionary_target_group_arn
+  security_group_id = module.security.ecs_sg_id
+  private_subnets = module.vpc.private_subnet_id
+  region = var.region
 }
 
 module "cloudwatch" {
   source = "./modules/cloudwatch"
   project = var.project
+}
+
+module "lambda" {
+  source = "./modules/lambda"
+  project = var.project
+  lambda_sg_id = module.security.lambda_sg_id
+  private_subnet_ids = module.vpc.private_subnet_id
+  api_orchestrator_role_arn = module.iam.api_orchestrator_role_arn
+  environment = var.environment
+  alb_dns_name = module.alb.alb_dns_name
+}
+
+module "apigateway" {
+  source = "./modules/apigateway"
+  project = var.project
+  lambda_function_invoke_arn = module.lambda.lambda_function_invoke_arn
+  function_name = module.lambda.function_name
 }
