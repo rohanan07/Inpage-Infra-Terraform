@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "text-processing-task-def" {
   }
   container_definitions = jsonencode([{
     name = "text-processing-task"
-    image = "nginx:latest"
+    image = "883027049525.dkr.ecr.ap-south-1.amazonaws.com/inpage-text-processing:v4"
     cpu = 0
     memory = 512
     essential = true
@@ -31,9 +31,13 @@ resource "aws_ecs_task_definition" "text-processing-task-def" {
       {
         name = "ENV"
         value = "dev"
+      },
+      {
+        name = "DICTIONARY_SERVICE_URL"
+        value = "http://${var.alb_dns_name}/dictionary"
       }
     ]
-    log_configuration = {
+    logConfiguration = {
       logDriver = "awslogs"
       options = {
         "awslogs-group" = var.cloud_watch_log_group_name
@@ -59,7 +63,7 @@ resource "aws_ecs_task_definition" "dictionary-task-def" {
   }
   container_definitions = jsonencode([{
     name = "dictionary-task"
-    image = "nginx:latest"
+    image = "883027049525.dkr.ecr.ap-south-1.amazonaws.com/inpage-dictionary:v5"
     cpu = 0
     memory = 512
     essential = true
@@ -80,7 +84,7 @@ resource "aws_ecs_task_definition" "dictionary-task-def" {
         value = "dev"
       }
     ]
-    log_configuration = {
+    logConfiguration = {
       logDriver = "awslogs"
       options = {
         "awslogs-group" = var.cloud_watch_log_group_name

@@ -10,7 +10,7 @@ resource "aws_lambda_function" "api_orchestrator" {
   role = var.api_orchestrator_role_arn
   handler = "index.handler"
   runtime = "nodejs18.x"
-
+  timeout = 15
   vpc_config {
     subnet_ids = var.private_subnet_ids
     security_group_ids = [var.lambda_sg_id]

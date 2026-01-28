@@ -33,3 +33,7 @@ variable "text-processing-target-group-arn" {
 variable "dictionary-target-group-arn" {
   type = string
 }
+
+variable "alb_dns_name" {
+  type = string
+}

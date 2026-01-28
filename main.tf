@@ -11,6 +11,7 @@ module "security" {
   source = "./modules/security"
   project = var.project
   vpc_id = module.vpc.vpc_id
+  private_subnet_ids = module.vpc.private_subnet_id
 }
 
 module "alb" {
@@ -39,6 +40,7 @@ module "ecs" {
   security_group_id = module.security.ecs_sg_id
   private_subnets = module.vpc.private_subnet_id
   region = var.region
+  alb_dns_name = module.alb.alb_dns_name
 }
 
 module "cloudwatch" {

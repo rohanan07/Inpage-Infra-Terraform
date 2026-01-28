@@ -6,6 +6,7 @@ resource "aws_ecs_service" "text-processing-service" {
   launch_type = "FARGATE"
   platform_version = "LATEST"
   enable_ecs_managed_tags = true
+  enable_execute_command = true
 
   network_configuration {
     subnets = var.private_subnets
@@ -33,6 +34,7 @@ resource "aws_ecs_service" "dictionary-service" {
   launch_type = "FARGATE"
   platform_version = "LATEST"
   enable_ecs_managed_tags = true
+  enable_execute_command = true
 
   network_configuration {
     subnets = var.private_subnets

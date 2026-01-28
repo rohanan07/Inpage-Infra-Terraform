@@ -21,7 +21,7 @@ resource "aws_lb_target_group" "text-processing-tg" {
 
   health_check {
     enabled = true
-    path = "/"
+    path = "/health"
     port                = "traffic-port"
     protocol            = "HTTP"
     healthy_threshold   = 2
@@ -46,7 +46,7 @@ resource "aws_lb_target_group" "dictionary-tg" {
 
   health_check {
     enabled = true
-    path = "/"
+    path = "/health"
     port                = "traffic-port"
     protocol            = "HTTP"
     healthy_threshold   = 2
@@ -89,7 +89,7 @@ resource "aws_lb_listener_rule" "text_process" {
 
 resource "aws_lb_listener_rule" "dictionary" {
   listener_arn = aws_lb_listener.text-processing-listner.arn
-  
+  priority = 10
   action {
     type = "forward"
     target_group_arn = aws_lb_target_group.dictionary-tg.arn
@@ -97,7 +97,7 @@ resource "aws_lb_listener_rule" "dictionary" {
 
   condition {
     path_pattern {
-      values = ["/dictionary/*"]
+      values = ["dictionary", "/dictionary/*"]
     }
   }
 }
