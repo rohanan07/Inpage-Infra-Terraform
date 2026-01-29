@@ -20,6 +20,7 @@ resource "aws_lambda_function" "api_orchestrator" {
     variables = {
       ENVIRONMENT = var.environment
       ALB_DNS = var.alb_dns_name
+      USER_DATA_SERVICE_URL = var.USER_DATA_SERVICE_URL
     }
   }
   tags = {

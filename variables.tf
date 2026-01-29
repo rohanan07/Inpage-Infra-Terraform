@@ -47,3 +47,8 @@ variable "dictionary-tg-port" {
   type = number
   default = 3000
 }
+
+variable "user-data-tg-port" {
+  type = number
+  default = 3000
+}

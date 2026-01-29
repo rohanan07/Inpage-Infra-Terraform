@@ -34,6 +34,14 @@ variable "dictionary-target-group-arn" {
   type = string
 }
 
+variable "user-data-target-group-arn" {
+  type = string
+}
+
 variable "alb_dns_name" {
+  type = string
+}
+
+variable "user_words_table_name" {
   type = string
 }

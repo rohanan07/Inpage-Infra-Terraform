@@ -52,3 +52,30 @@ resource "aws_ecs_service" "dictionary-service" {
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent = 200
 }
+
+resource "aws_ecs_service" "user-data-service" {
+  name = "user-data-service"
+  cluster = aws_ecs_cluster.inpage_cluster.id
+  task_definition = aws_ecs_task_definition.user-data-task-def.arn
+  desired_count = 1
+  launch_type = "FARGATE"
+  platform_version = "LATEST"
+  enable_ecs_managed_tags = true
+  enable_execute_command = true
+
+  network_configuration {
+    subnets = var.private_subnets
+    security_groups = [ var.security_group_id ]
+    assign_public_ip = false
+  }
+
+  load_balancer {
+    target_group_arn = var.user-data-target-group-arn 
+    container_name = "user-data-task"
+    container_port = 3000
+  }
+  
+  health_check_grace_period_seconds = 60
+  deployment_minimum_healthy_percent = 50
+  deployment_maximum_percent = 200
+}

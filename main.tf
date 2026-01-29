@@ -21,12 +21,14 @@ module "alb" {
   security_group_id = module.security.alb_sg_id
   text-processing-tg-port = var.text-processing-tg-port
   dictionary-tg-port = var.dictionary-tg-port
+  user-data-tg-port = var.user-data-tg-port
   subnet_ids = module.vpc.public_subnet_id
 }
 
 module "iam" {
   source = "./modules/iam"
   project = var.project
+  user_words_table_arn = module.dynamodb.user_words_table_arn
 }
 
 module "ecs" {
@@ -41,6 +43,8 @@ module "ecs" {
   private_subnets = module.vpc.private_subnet_id
   region = var.region
   alb_dns_name = module.alb.alb_dns_name
+  user-data-target-group-arn = module.alb.user_data_target_group_arn
+  user_words_table_name = module.dynamodb.user_words_table_name
 }
 
 module "cloudwatch" {
@@ -56,6 +60,13 @@ module "lambda" {
   api_orchestrator_role_arn = module.iam.api_orchestrator_role_arn
   environment = var.environment
   alb_dns_name = module.alb.alb_dns_name
+  USER_DATA_SERVICE_URL = "http://${module.alb.alb_dns_name}/userdata"
+}
+
+module "cognito" {
+  source = "./modules/cognito"
+  project = var.project
+  api_gateway_rest_api_id = module.apigateway.api_gateway_id
 }
 
 module "apigateway" {
@@ -63,4 +74,11 @@ module "apigateway" {
   project = var.project
   lambda_function_invoke_arn = module.lambda.lambda_function_invoke_arn
   function_name = module.lambda.function_name
+  authorizer_id = module.cognito.authorizer_id
+}
+
+module "dynamodb" {
+  source = "./modules/dynamodb"
+  project = var.project
+  region = var.region
 }

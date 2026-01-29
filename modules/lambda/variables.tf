@@ -21,3 +21,7 @@ variable "private_subnet_ids" {
 variable "lambda_sg_id" {
   type = string
 }
+
+variable "USER_DATA_SERVICE_URL" {
+  type = string
+}

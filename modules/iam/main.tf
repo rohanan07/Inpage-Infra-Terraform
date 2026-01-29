@@ -82,3 +82,28 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_ssm" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
+
+resource "aws_iam_policy" "dynamodb_write_policy" {
+  name        = "${var.project}-dynamo-write"
+  description = "Allow ECS to write user words"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:Query",
+          "dynamodb:GetItem"
+        ]
+        Effect   = "Allow"
+        Resource = var.user_words_table_arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_dynamodb_write" {
+  role = aws_iam_role.ecs_task_role.id
+  policy_arn = aws_iam_policy.dynamodb_write_policy.arn 
+}

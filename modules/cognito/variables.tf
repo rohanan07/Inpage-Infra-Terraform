@@ -2,6 +2,6 @@ variable "project" {
   type = string
 }
 
-variable "user_words_table_arn" {
+variable "api_gateway_rest_api_id" {
   type = string
 }

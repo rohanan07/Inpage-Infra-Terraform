@@ -23,6 +23,10 @@ variable "dictionary-tg-port" {
   type = number
 }
 
+variable "user-data-tg-port" {
+  type = number
+}
+
 variable "vpc_id" {
   type = string
 }

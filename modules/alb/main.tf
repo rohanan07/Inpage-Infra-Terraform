@@ -62,6 +62,31 @@ resource "aws_lb_target_group" "dictionary-tg" {
   }
 }
 
+resource "aws_lb_target_group" "user-data-tg" {
+  name = "${var.project}-user-data-tg"
+  port = var.user-data-tg-port
+  vpc_id = var.vpc_id
+  protocol = "HTTP"
+  target_type = "ip"
+
+  health_check {
+    enabled = true
+    path = "/health"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    timeout             = 5
+    interval            = 30
+    matcher             = "200-299"
+  }
+  deregistration_delay = 30
+  
+  tags = {
+    name = "${var.project}-user-data-tg"
+  }
+}
+
 resource "aws_lb_listener" "text-processing-listner" {
  load_balancer_arn = aws_lb.main_alb.arn
  port = 80
@@ -98,6 +123,21 @@ resource "aws_lb_listener_rule" "dictionary" {
   condition {
     path_pattern {
       values = ["dictionary", "/dictionary/*"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "user_data" {
+  listener_arn = aws_lb_listener.text-processing-listner.arn
+  priority = 20
+  action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.user-data-tg.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/userdata/*"]
     }
   }
 }

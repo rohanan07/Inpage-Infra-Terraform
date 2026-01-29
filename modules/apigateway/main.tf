@@ -12,7 +12,11 @@ resource "aws_api_gateway_resource" "process" {
 }
 
 resource "aws_api_gateway_method" "process_post" {
-  authorization = "NONE"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = var.authorizer_id
+  request_parameters = {
+    "method.request.header.Authorization" = true
+  }
   http_method = "POST"
   resource_id = aws_api_gateway_resource.process.id
   rest_api_id = aws_api_gateway_rest_api.inpage_api.id

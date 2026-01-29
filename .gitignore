@@ -11,3 +11,4 @@ override.tf.json
 .vscode/
 *.swp
 session-manager-plugin.deb
+cognito-idp respond-to-auth-challenge 

@@ -2,6 +2,6 @@ variable "project" {
   type = string
 }
 
-variable "user_words_table_arn" {
+variable "region" {
   type = string
 }
